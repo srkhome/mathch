@@ -12,25 +12,25 @@
 </head>
 <body>
     <h2>謄本面積換算</h2>
-    <label>主建物面積 (平方公尺): <input type="number" id="mainArea" value="0"></label>
-    <label>附屬建物面積 (平方公尺): <input type="number" id="subArea" value="0"></label>
+    <label>主建物面積 (平方公尺): <input type="number" id="mainArea" value="0" min="0"></label>
+    <label>附屬建物面積 (平方公尺): <input type="number" id="subArea" value="0" min="0"></label>
     
     <div class="input-group">
-        <label>公設總面積1 (平方公尺): <input type="number" id="publicArea1" value="0"></label>
-        <label>持有比例: <input type="number" id="publicRatio1Numerator" value="0"> / <input type="number" id="publicRatio1Denominator" value="1"></label>
+        <label>公設總面積1 (平方公尺) [車位公設]: <input type="number" id="publicArea1" value="0" min="0"></label>
+        <label>持有比例: <input type="number" id="publicRatio1Denominator" value="1"> 分之 <input type="number" id="publicRatio1Numerator" value="0"></label>
     </div>
     <div class="input-group">
-        <label>公設總面積2 (平方公尺): <input type="number" id="publicArea2" value="0"></label>
-        <label>持有比例: <input type="number" id="publicRatio2Numerator" value="0"> / <input type="number" id="publicRatio2Denominator" value="1"></label>
+        <label>公設總面積2 (平方公尺): <input type="number" id="publicArea2" value="0" min="0"></label>
+        <label>持有比例: <input type="number" id="publicRatio2Denominator" value="1"> 分之 <input type="number" id="publicRatio2Numerator" value="0"></label>
     </div>
     <div class="input-group">
-        <label>公設總面積3 (平方公尺): <input type="number" id="publicArea3" value="0"></label>
-        <label>持有比例: <input type="number" id="publicRatio3Numerator" value="0"> / <input type="number" id="publicRatio3Denominator" value="1"></label>
+        <label>公設總面積3 (平方公尺): <input type="number" id="publicArea3" value="0" min="0"></label>
+        <label>持有比例: <input type="number" id="publicRatio3Denominator" value="1"> 分之 <input type="number" id="publicRatio3Numerator" value="0"></label>
     </div>
     <div class="input-group">
-        <label>車位持有比例: <input type="number" id="parkingRatioNumerator" value="0"> / <input type="number" id="parkingRatioDenominator" value="1"></label>
+        <label>車位持有比例: <input type="number" id="parkingRatioDenominator" value="1"> 分之 <input type="number" id="parkingRatioNumerator" value="0"></label>
     </div>
-    <label>實際租金 (元): <input type="number" id="actualRent" value="0"></label>
+    <label>實際租金 (元): <input type="number" id="actualRent" value="0" min="0"></label>
     
     <button onclick="calculateArea()">計算</button>
     
@@ -40,16 +40,18 @@
     
     <script>
         function calculateArea() {
-            let mainArea = parseFloat(document.getElementById('mainArea').value) || 0;
-            let subArea = parseFloat(document.getElementById('subArea').value) || 0;
-            let publicArea1 = parseFloat(document.getElementById('publicArea1').value) || 0;
-            let publicRatio1 = (parseFloat(document.getElementById('publicRatio1Numerator').value) || 0) / (parseFloat(document.getElementById('publicRatio1Denominator').value) || 1);
-            let publicArea2 = parseFloat(document.getElementById('publicArea2').value) || 0;
-            let publicRatio2 = (parseFloat(document.getElementById('publicRatio2Numerator').value) || 0) / (parseFloat(document.getElementById('publicRatio2Denominator').value) || 1);
-            let publicArea3 = parseFloat(document.getElementById('publicArea3').value) || 0;
-            let publicRatio3 = (parseFloat(document.getElementById('publicRatio3Numerator').value) || 0) / (parseFloat(document.getElementById('publicRatio3Denominator').value) || 1);
-            let parkingRatio = (parseFloat(document.getElementById('parkingRatioNumerator').value) || 0) / (parseFloat(document.getElementById('parkingRatioDenominator').value) || 1);
-            let actualRent = parseFloat(document.getElementById('actualRent').value) || 0;
+            let getValue = (id) => Math.max(parseFloat(document.getElementById(id).value) || 0, 0);
+            
+            let mainArea = getValue('mainArea');
+            let subArea = getValue('subArea');
+            let publicArea1 = getValue('publicArea1');
+            let publicRatio1 = getValue('publicRatio1Numerator') / Math.max(getValue('publicRatio1Denominator'), 1);
+            let publicArea2 = getValue('publicArea2');
+            let publicRatio2 = getValue('publicRatio2Numerator') / Math.max(getValue('publicRatio2Denominator'), 1);
+            let publicArea3 = getValue('publicArea3');
+            let publicRatio3 = getValue('publicRatio3Numerator') / Math.max(getValue('publicRatio3Denominator'), 1);
+            let parkingRatio = getValue('parkingRatioNumerator') / Math.max(getValue('parkingRatioDenominator'), 1);
+            let actualRent = getValue('actualRent');
             
             let totalMainSub = mainArea + subArea;
             let totalMainSubPing = Math.round((totalMainSub * 0.3025) * 100) / 100;
