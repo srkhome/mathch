@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>謄本面積換算</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .input-group { display: flex; align-items: center; gap: 10px; margin: 5px 0; }
+        .result { margin-top: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>謄本面積換算</h2>
+    <label>主建物面積 (平方公尺): <input type="number" id="mainArea" value="0"></label>
+    <label>附屬建物面積 (平方公尺): <input type="number" id="subArea" value="0"></label>
+    
+    <div class="input-group">
+        <label>公設總面積1 (平方公尺): <input type="number" id="publicArea1" value="0"></label>
+        <label>持有比例: <input type="number" id="publicRatio1Numerator" value="0"> / <input type="number" id="publicRatio1Denominator" value="1"></label>
+    </div>
+    <div class="input-group">
+        <label>公設總面積2 (平方公尺): <input type="number" id="publicArea2" value="0"></label>
+        <label>持有比例: <input type="number" id="publicRatio2Numerator" value="0"> / <input type="number" id="publicRatio2Denominator" value="1"></label>
+    </div>
+    <div class="input-group">
+        <label>公設總面積3 (平方公尺): <input type="number" id="publicArea3" value="0"></label>
+        <label>持有比例: <input type="number" id="publicRatio3Numerator" value="0"> / <input type="number" id="publicRatio3Denominator" value="1"></label>
+    </div>
+    <div class="input-group">
+        <label>車位持有比例: <input type="number" id="parkingRatioNumerator" value="0"> / <input type="number" id="parkingRatioDenominator" value="1"></label>
+    </div>
+    <label>實際租金 (元): <input type="number" id="actualRent" value="0"></label>
+    
+    <button onclick="calculateArea()">計算</button>
+    
+    <div class="result" id="result1"></div>
+    <div class="result" id="result2"></div>
+    <div class="result" id="result3"></div>
+    
+    <script>
+        function calculateArea() {
+            let mainArea = parseFloat(document.getElementById('mainArea').value) || 0;
+            let subArea = parseFloat(document.getElementById('subArea').value) || 0;
+            let publicArea1 = parseFloat(document.getElementById('publicArea1').value) || 0;
+            let publicRatio1 = (parseFloat(document.getElementById('publicRatio1Numerator').value) || 0) / (parseFloat(document.getElementById('publicRatio1Denominator').value) || 1);
+            let publicArea2 = parseFloat(document.getElementById('publicArea2').value) || 0;
+            let publicRatio2 = (parseFloat(document.getElementById('publicRatio2Numerator').value) || 0) / (parseFloat(document.getElementById('publicRatio2Denominator').value) || 1);
+            let publicArea3 = parseFloat(document.getElementById('publicArea3').value) || 0;
+            let publicRatio3 = (parseFloat(document.getElementById('publicRatio3Numerator').value) || 0) / (parseFloat(document.getElementById('publicRatio3Denominator').value) || 1);
+            let parkingRatio = (parseFloat(document.getElementById('parkingRatioNumerator').value) || 0) / (parseFloat(document.getElementById('parkingRatioDenominator').value) || 1);
+            let actualRent = parseFloat(document.getElementById('actualRent').value) || 0;
+            
+            let totalMainSub = mainArea + subArea;
+            let totalMainSubPing = Math.round((totalMainSub * 0.3025) * 100) / 100;
+            
+            let totalPublic = (publicArea1 * publicRatio1) + (publicArea2 * publicRatio2) + (publicArea3 * publicRatio3);
+            let parkingArea = publicArea1 * parkingRatio;
+            let finalTotal = totalMainSub + totalPublic - parkingArea;
+            let finalTotalPing = Math.round((finalTotal * 0.3025) * 100) / 100;
+            
+            let marketRent = Math.round(actualRent / 0.9);
+            
+            document.getElementById('result1').innerText = `主建物＋附屬建物: ${totalMainSub.toFixed(2)} 平方公尺 (${totalMainSubPing.toFixed(2)} 坪)`;
+            document.getElementById('result2').innerText = `主建物＋附屬建物＋所有公設－車位: ${finalTotal.toFixed(2)} 平方公尺 (${finalTotalPing.toFixed(2)} 坪)`;
+            document.getElementById('result3').innerText = `市場租金: ${marketRent} 元`;
+        }
+    </script>
+</body>
+</html>
